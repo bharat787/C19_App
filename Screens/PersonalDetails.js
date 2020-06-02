@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Colors from '../constants/colors'
 import Header from '../components/Header'
 import Input from '../components/Input'
@@ -7,7 +8,8 @@ import Input from '../components/Input'
 const PersonalDetails = props => {
     return (
         
-        <View style={styles.screen}>
+        <KeyboardAwareScrollView style={styles.screen}>
+            <View>
             <Header title="Personal Details" style={styles.TopHeader}/>
             
                 
@@ -26,69 +28,74 @@ const PersonalDetails = props => {
                 <TouchableOpacity style={styles.button}>
                     <Text style={styles.font}>Save</Text>
                 </TouchableOpacity>
-
+                </View>
             
-        </View>
+        </KeyboardAwareScrollView>
 
     )
 }
 
 const styles = StyleSheet.create({
     screen: {
-        flex: 1,
+        flex: 0,
         width: "100%",
-        justifyContent: 'center',
+        
         
     },
 
     TopHeader: {
-        backgroundColor: Colors.RedPrim
+        backgroundColor: Colors.Blue2
     },
 
     TextIn: {
         flex: 1,
         marginTop: 100,
-        marginBottom: 5,
+        marginBottom: 15,
         width: "60%",
         alignSelf: 'center',
         fontSize: 20,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        padding: 10
 
     },
 
     TextIn2: {
         flex: 1,
-        marginVertical: 5,
+        marginVertical: 15,
         width: "60%",
         alignSelf: 'center',
         fontSize: 20,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        padding: 10
 
     },
 
     TextIn3: {
         flex: 1,
-        marginTop: 5,
+        marginTop: 15,
         marginBottom: 50,
         width: "60%",
         alignSelf: 'center',
         fontSize: 20,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        padding: 10
 
     },
     font: {
-        color: 'white',
+        color: Colors.Blue2,
         fontSize: 30,
         fontWeight: 'bold',
         
     },
 
     button:{
-        flex: 1,
+        flex: 0,
         alignSelf: 'center',
-        backgroundColor: Colors.RedPrim,
+        backgroundColor: 'white',
+        borderColor: Colors.Blue2,
+        borderWidth: 2,
         borderRadius: 50,
-        height: "20%",
+        height: "7%",
         width: "40%",
         alignItems: 'center',
         justifyContent: 'center',
