@@ -10,7 +10,6 @@ const PersonalDetails = props => {
         
         <KeyboardAwareScrollView style={styles.screen}>
             <View>
-            <Header title="Personal Details" style={styles.TopHeader}/>
             
                 
                 <Input style={styles.TextIn} 

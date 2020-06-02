@@ -2,6 +2,8 @@ import React from 'react'
 import { StyleSheet, Button, View, Text, TouchableOpacity } from 'react-native'
 import Header from '../components/Header'
 import Colors from '../constants/colors'
+import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator } from '@react-navigation/stack'
 
 
 const HomeUser = props => {
@@ -9,16 +11,23 @@ const HomeUser = props => {
     return (
         
         <View style={styles.screen}>
-            <Header title="DashBoard" style={styles.TopHeader}/>
-            
+           
                 
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity 
+                style={styles.button}
+                onPress={() => props.nav.navigate('Protect Me')}>
                     <Text style={styles.font}>Protect Me</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button2}>
+
+                <TouchableOpacity 
+                style={styles.button2}
+                onPress={() => props.nav.navigate('Location History')}>
                     <Text style={styles.font}>Location History</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button3}>
+
+                <TouchableOpacity 
+                style={styles.button3} 
+                onPress={() => props.nav.navigate('Personal Details')}>
                     <Text style={styles.font}>Personal Details</Text>
                 </TouchableOpacity>
                 
