@@ -9,6 +9,8 @@ import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 import Colors from './constants/colors'
 
+
+
 function DashBoard({navigation}) {
 	return (
 		<View style={styles.container}>
