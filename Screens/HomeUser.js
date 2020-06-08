@@ -1,115 +1,125 @@
-import React from 'react'
-import { StyleSheet, Button, View, Text, TouchableOpacity } from 'react-native'
-import Header from '../components/Header'
-import Colors from '../constants/colors'
-import { NavigationContainer } from '@react-navigation/native'
-import { createStackNavigator } from '@react-navigation/stack'
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import HomeUser from './Screens/HomeUser'
+import PersonalDetails from './Screens/PersonalDetails';
+import ProtectMe from './Screens/ProtectMe'
+import LocationHistory from './Screens/LocationHistory'
+import HomeStaff from './Screens/HomeStaff'
+import Login from './Screens/Login'
+import Signup from './Screens/Signup'
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
+import 'react-native-gesture-handler';
+import Colors from './constants/colors'
 
 
-const HomeUser = props => {
-
-    return (
-        
-        <View style={styles.screen}>
-           
-                
-                <TouchableOpacity 
-                style={styles.button}
-                onPress={() => props.nav.navigate('Protect Me')}>
-                    <Text style={styles.font}>Protect Me</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                style={styles.button2}
-                onPress={() => props.nav.navigate('Location History')}>
-                    <Text style={styles.font}>Location History</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                style={styles.button3} 
-                onPress={() => props.nav.navigate('Personal Details')}>
-                    <Text style={styles.font}>Personal Details</Text>
-                </TouchableOpacity>
-                
-            
-        </View>
-
-    )
+function Log({navigation}) {
+	return (
+		<View style={styles.container}>
+			<Login nav={navigation}/>
+		</View>
+	)
 }
 
-const styles = StyleSheet.create ({
+function SignUp({navigation}) {
+	return (
+		<View style={styles.container}>
+			<Signup nav={navigation}/>
+		</View>
+	)
+}
 
-    button: {
+function DashBoard({navigation}) {
+	return (
+		<View style={styles.container}>
+			<HomeUser nav={navigation}/>
+		</View>
+	)
+}
+
+function PersDetails() {
+	return (
+		<View style={styles.container}>
+			<PersonalDetails/>
+		</View>
+	)
+}
+
+function LocHis() {
+	return (
+		<View style={styles.container}>
+			<LocationHistory/>
+		</View>
+	)
+}
+
+function ProtMe() {
+	return (
+		<View style={styles.container}>
+			<ProtectMe/>
+		</View>
+	)
+}
+
+const Stack = createStackNavigator()
+
+export default function App() {
+  return (
+    <NavigationContainer>
+		<Stack.Navigator initialRouteName="LogIn">
         
-        flex: 1,
-        height: "20%",
-        width: "80%",
-        borderRadius: 20,
-        marginTop: 70,
-        marginBottom: 20,
-        padding: 10,
-        backgroundColor: Colors.Blue1,
-        justifyContent: "center",
-        alignItems: 'center',
-        alignSelf: 'center'
-    },
+		  <Stack.Screen 
+		  name="LogIn" 
+		  component={Log} 
+		  options={{ title: 'Login', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
 
-    button2: {
+		  <Stack.Screen 
+		  name="Register" 
+		  component={SignUp} 
+		  options={{ title: 'Register', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+
+		  <Stack.Screen 
+		  name="UserHome" 
+		  component={DashBoard} 
+		  options={{ title: 'DashBoard', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+
+		  <Stack.Screen 
+		  name="Personal Details" 
+		  component={PersDetails}
+		  options={{ title: 'User Details', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+
+		  <Stack.Screen 
+		  name="Location History" 
+		  component={LocHis}
+		  options={{ title: 'Places Visited', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+
+		  <Stack.Screen 
+		  name="Protect Me" 
+		  component={ProtMe}
+		  options={{ title: 'Protect Me', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
         
-        flex: 1,
-        height: "20%",
-        width: "80%",
-        borderRadius: 20,
-        marginVertical: 20,
-        padding: 10,
-        backgroundColor: Colors.Blue2,
-        justifyContent: "center",
-        alignItems: 'center',
-        alignSelf: 'center'
-    },
+		</Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
-    button3: {
-        
-        flex: 1,
-        height: "20%",
-        width: "80%",
-        borderRadius: 20,
-        marginTop: 20,
-        marginBottom: 70,
-        padding: 10,
-        backgroundColor: Colors.Blue3,
-        justifyContent: "center",
-        alignItems: 'center',
-        alignSelf: 'center'
-        
-    },
-
-    container: {
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        padding: 100,
-        flex: 1,
-        width: "130%",
-        marginVertical: 100
-    },
-
-    screen: {
-        flex: 1,
-        width: "100%",
-        justifyContent: 'center'
-    },
-
-    font: {
-        color: 'white',
-        fontSize: 30,
-        fontWeight: 'bold'
-    },
-
-    TopHeader: {
-        backgroundColor: Colors.BluePrim
-    }
-
-})
-
-
-export default HomeUser
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
