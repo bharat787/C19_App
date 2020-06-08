@@ -1,39 +1,46 @@
-import React from 'react'
+import React , {useState}from 'react'
 import {StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native'
+import Colors from '../constants/colors'
 
 const Login = props => {
-    state = {
-        id: "",
-        password: ""
-    }
 
-    return (
-        <View style={styles.container}>
-        <Text style={styles.logo}>C19</Text>
-        <View style={styles.inputView} >
-          <TextInput  
-            style={styles.inputText}
-            placeholder="Email..." 
-            placeholderTextColor="#003f5c"
-            onChangeText={text => this.setState({email:text})}/>
-        </View>
-        <View style={styles.inputView} >
-          <TextInput  
-            secureTextEntry
-            style={styles.inputText}
-            placeholder="Password..." 
-            placeholderTextColor="#003f5c"
-            onChangeText={text => this.setState({password:text})}/>
-        </View>
-        <TouchableOpacity>
-          <Text style={styles.forgot}>Forgot Password?</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.loginBtn}>
-          <Text style={styles.loginText}>LOGIN</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.loginText}>Signup</Text>
-        </TouchableOpacity>
+  const [id, setId] = useState('')
+  const [password, setPassword ] = useState('')
+
+
+return (
+    <View style={styles.container}>
+    <Text style={styles.logo}>C19</Text>
+    <View style={styles.inputView} >
+      <TextInput  
+        style={styles.inputText}
+        placeholder="Email..." 
+        placeholderTextColor= {Colors.PlaceholderTextColor}
+        onChangeText={text => setId(text)}/>
+    </View>
+    <View style={styles.inputView} >
+      <TextInput  
+        secureTextEntry
+        style={styles.inputText}
+        placeholder="Password..." 
+        placeholderTextColor="#003f5c"
+        onChangeText={text => setPassword(text)}/>
+
+       </View>
+       <TouchableOpacity style={styles.loginBtn}
+       onPress={() => props.nav.navigate('UserHome')}>
+         <Text style={styles.loginText}>LOGIN</Text>
+       </TouchableOpacity>
+
+       <TouchableOpacity style={styles.loginBtn}>
+         <Text style={styles.forgot}>Forgot Password?</Text>
+       </TouchableOpacity>
+       
+       <TouchableOpacity 
+       onPress={() => props.nav.navigate('Register')}
+       style={styles.loginBtn}>
+         <Text style={styles.loginText}>Signup</Text>
+       </TouchableOpacity>
 
   
       </View>
@@ -44,21 +51,22 @@ const Login = props => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: Colors.Tealbg,
       alignItems: 'center',
       justifyContent: 'center',
+      width: '100%'
     },
 
     logo:{
         fontWeight:"bold",
         fontSize:50,
-        color:"#fb5b5a",
+        color: Colors.TealTranslucent,
         marginBottom:40
       },
 
       inputView:{
         width:"80%",
-        backgroundColor:"#465881",
+        backgroundColor:Colors.TealTranslucent,
         borderRadius:25,
         height:50,
         marginBottom:20,
@@ -68,12 +76,12 @@ const styles = StyleSheet.create({
 
       inputText:{
         height:50,
-        color:"white"
+        color: Colors.PlaceholderTextColor
       },
 
       forgot:{
         color:"white",
-        fontSize:11
+        fontSize:14
       },
       loginBtn:{
         width:"80%",
@@ -86,7 +94,8 @@ const styles = StyleSheet.create({
         marginBottom:10
       },
       loginText:{
-        color:"white"
+        color:"white",
+        fontSize:14
       }
   })
 
