@@ -1,14 +1,51 @@
-import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import React, {useState} from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, CheckBox,  Alert } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Colors from '../constants/colors'
 import Header from '../components/Header'
 import Input from '../components/Input'
+import firebase from '../environment/config'
 
-const RegisterUser = props => {
+const Signup = props => {
 
     const [isStaff, setStaff] = useState(false);
     const [isPersonal, setPersonal] = useState(false);
+    const [Fname, setFname] = useState('')
+    const [Lname, setLname] = useState('')
+    const [Email, setEmail] = useState('')
+    const [MobileNum, setMobileNum] = useState('')
+    const [Password, setPassword] = useState('')
+    
+    const registerUser = () => {
+            if(Fname === '' && Email === '' && Password === '') {
+                Alert.alert('Enter details to signup!')
+            } else {
+                firebase
+                .auth()
+                .createUserWithEmailAndPassword(Email, Password)
+                .then((res) => {
+                    firebase.database().ref('users/'+ res.user.uid).set({
+                        displayName: Fname,
+                        email: Email,
+                        StaffMem: isStaff,
+                        PersonalMem: isPersonal,
+                        phoneNumber: MobileNum
+                    })
+
+                    console.log("User registered successfully")
+                    setEmail('')
+                    setFname('')
+                    setLname('')
+                    setMobileNum('')
+                    setPassword('')
+                    setPersonal(false)
+                    setStaff(false)
+                })
+            
+            }
+            props.nav.navigate('LogIn')
+        }
+
 
     return (
         
@@ -18,19 +55,24 @@ const RegisterUser = props => {
                 
                 <Input style={styles.TextIn} 
                 placeholder="First Name" 
-                placeholderTextColor={Colors.YellowAccent}/>
-
-                <Input style={styles.TextIn} 
+                placeholderTextColor={Colors.TealText}
+                onChangeText={text => setFname(text)}
+                onValueChange={console.log(Fname)}/>
+                
+                <Input style={styles.TextIn2} 
                 placeholder="Last Name" 
-                placeholderTextColor={Colors.YellowAccent}/>
+                placeholderTextColor={Colors.TealText}
+                onChangeText={text => setLname(text)}/>
 
                 <Input style={styles.TextIn2} 
                 placeholder="Mobile Number" 
-                placeholderTextColor={Colors.YellowAccent}/>
+                placeholderTextColor={Colors.TealText}
+                onChangeText={text => setMobileNum(text)}/>
                 
                 <Input style={styles.TextIn3} 
                 placeholder="Email ID" 
-                placeholderTextColor={Colors.YellowAccent}/>
+                placeholderTextColor={Colors.TealText}
+                onChangeText={text => setEmail(text)}/>
 
                 <View style={styles.checkboxContainer}>
                     <CheckBox
@@ -52,9 +94,12 @@ const RegisterUser = props => {
 
                 <Input style={styles.TextIn3} 
                 placeholder="Password" 
-                placeholderTextColor={Colors.YellowAccent}/>            
+                placeholderTextColor={Colors.TealText}
+                onChangeText={text => setPassword(text)}/>            
 
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity 
+                style={styles.button}
+                onPress={() => registerUser()}>
                     <Text style={styles.font}>Save</Text>
                 </TouchableOpacity>
                 </View>
@@ -68,6 +113,7 @@ const styles = StyleSheet.create({
     screen: {
         flex: 0,
         width: "100%",
+        backgroundColor: Colors.TealTranslucent1
         
         
     },
@@ -79,7 +125,6 @@ const styles = StyleSheet.create({
     TextIn: {
         flex: 1,
         marginTop: 100,
-        marginBottom: 15,
         width: "60%",
         alignSelf: 'center',
         fontSize: 20,
@@ -110,8 +155,9 @@ const styles = StyleSheet.create({
         padding: 10
 
     },
+
     font: {
-        color: Colors.Blue2,
+        color: Colors.TealTranslucent,
         fontSize: 30,
         fontWeight: 'bold',
         
@@ -120,8 +166,8 @@ const styles = StyleSheet.create({
     button:{
         flex: 0,
         alignSelf: 'center',
-        backgroundColor: 'white',
-        borderColor: Colors.Blue2,
+        backgroundColor: Colors.Tealbg,
+        borderColor: Colors.TealTranslucent1,
         borderWidth: 2,
         borderRadius: 50,
         height: "7%",
@@ -130,19 +176,25 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 250
 
-        },
+    },
 
-        checkboxContainer: {
-            flexDirection: "row",
-            marginBottom: 20,
-          },
-          checkbox: {
-            alignSelf: "center",
-          },
-          label: {
-            margin: 8,
-          },
+    checkboxContainer: {
+        flexDirection: "row",
+        marginBottom: 20,
+        alignSelf: 'center'
+    },
+
+        checkbox: {
+        alignSelf: "center",
+    },
+
+    label: {
+        margin: 20,
+        color: Colors.TealText,
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
     
 })
 
-export default RegisterUser
+export default Signup
