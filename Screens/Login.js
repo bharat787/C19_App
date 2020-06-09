@@ -1,11 +1,33 @@
 import React , {useState}from 'react'
-import {StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native'
+import {StyleSheet, Text, View, TextInput, TouchableOpacity, Alert} from 'react-native'
 import Colors from '../constants/colors'
+import firebase from '../environment/config'
 
 const Login = props => {
 
   const [id, setId] = useState('')
   const [password, setPassword ] = useState('')
+  const [isStaff, setStaff] = useState('')
+
+  const userLogin = () => {
+    if(id === '' && password === '') {
+		
+		Alert.alert('Enter details to sign in!')
+    } else {
+		firebase
+		.auth()
+		.signInWithEmailAndPassword(id, password)
+		.then((res) => {
+			console.log(res)
+			console.log('User logged in successfully!')
+			setId('')
+			setPassword('')
+			props.nav.navigate('UserHome')
+		})
+		
+
+		}
+    }
 
 
 return (
@@ -28,7 +50,7 @@ return (
 
        </View>
        <TouchableOpacity style={styles.loginBtn}
-       onPress={() => props.nav.navigate('UserHome')}>
+       onPress={() => userLogin()}>
          <Text style={styles.loginText}>LOGIN</Text>
        </TouchableOpacity>
 
