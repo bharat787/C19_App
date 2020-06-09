@@ -1,11 +1,41 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Colors from '../constants/colors'
 import Header from '../components/Header'
 import Input from '../components/Input'
+import firebase from '../environment/config'
 
 const PersonalDetails = props => {
+
+    const [name, setName] = useState('')
+    
+    const [details, setDetails] = useState({})
+    
+    var userDetails = firebase.database().ref(firebase.auth().currentUser.uid)
+    var user = firebase.auth().currentUser.uid
+   
+    
+    // userDetails.once('value').then(function(snapshot) {
+    //     var key = snapshot.key
+    //     console.log(snapshot.child("https://ps-c19.firebaseio.com" + '/users/' + user  + `/phoneNumber`).key)
+    // })
+    
+    
+
+    firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value', function (snapshot) {
+        setDetails(snapshot.val())
+    });
+    console.log("im here")
+    console.log('see if obj comes after')
+    //console.log(details.phoneNumber)
+    // firebase.database().ref(`Users/${firebase.auth().currentUser.uid}`).once('value', function (snapshot) {
+    //     console.log(snapshot.val())
+    // });
+   // console.log("https://ps-c19.firebaseio.com" + '/users/' + user  + `/email`)
+    //console.log(name)
+    //console.log(key)
+
     return (
         
         <KeyboardAwareScrollView style={styles.screen}>
@@ -13,15 +43,15 @@ const PersonalDetails = props => {
             
                 
                 <Input style={styles.TextIn} 
-                placeholder="Full Name" 
+                placeholder= {details.displayName}
                 placeholderTextColor={Colors.YellowAccent}/>
 
                 <Input style={styles.TextIn2} 
-                placeholder="Mobile Number" 
+                placeholder={details.phoneNumber}
                 placeholderTextColor={Colors.YellowAccent}/>
                 
                 <Input style={styles.TextIn3} 
-                placeholder="Email ID" 
+                placeholder={details.email}
                 placeholderTextColor={Colors.YellowAccent}/>
 
                 <TouchableOpacity style={styles.button}>
