@@ -7,6 +7,13 @@ export default {
     YellowAccent: "#FFB300",
     Purple1: "#BA68C8",
     Purple2: "#AB47BC",
-    Purple3: "#9C27B0"
+    Purple3: "#9C27B0",
+    Redbg: "#c7006e",
+    RedTranslucent: "#f5b6da",
+    Tealbg: "#4DB6AC",
+    TealTranslucent: "#E0F2F1",
+    TealTranslucent1: "#B2DFDB",
+    TealText: "#0097A7",
+    PlaceholderTextColor: "#003f5c"
 
 }
