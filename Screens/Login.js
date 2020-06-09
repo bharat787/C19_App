@@ -7,7 +7,8 @@ const Login = props => {
 
   const [id, setId] = useState('')
   const [password, setPassword ] = useState('')
-  const [isStaff, setStaff] = useState('')
+  const [details, setDetails] = useState({})
+  
 
   const userLogin = () => {
     if(id === '' && password === '') {
@@ -22,7 +23,17 @@ const Login = props => {
 			console.log('User logged in successfully!')
 			setId('')
 			setPassword('')
-			props.nav.navigate('UserHome')
+
+			firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value', function (snapshot) {
+				setDetails(snapshot.val())
+			})
+			if(details.StaffMem) {
+				props.nav.navigate('UserHome')
+
+			} else {
+				props.nav.navigate('StaffHome')
+
+			}
 		})
 		
 
