@@ -4,9 +4,23 @@ import Header from '../components/Header'
 import Colors from '../constants/colors'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
+import firebase from '../environment/config'
 
 
 const HomeStaff = props => {
+
+    const signOut = () => {
+
+        firebase.auth().signOut().then(function() {
+            // Sign-out successful.
+          }).catch(function(error) {
+            // An error happened.
+          });
+
+          props.nav.navigate('LogIn')
+
+
+    }
 
     return (
         
@@ -15,7 +29,7 @@ const HomeStaff = props => {
                 
                 <TouchableOpacity 
                 style={styles.button}
-                onPress={() => props.nav.navigate('Register User')}>
+                onPress={() => props.nav.navigate('Register Visitor')}>
                     <Text style={styles.font}>Register User</Text>
                 </TouchableOpacity>
 
@@ -23,6 +37,12 @@ const HomeStaff = props => {
                 style={styles.button2} 
                 onPress={() => props.nav.navigate('Generate Alert')}>
                     <Text style={styles.font}>Generate Alert</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                style={styles.logout} 
+                onPress={() => signOut()}>
+                    <Text style={styles.font}>Logout</Text>
                 </TouchableOpacity>
                 
             
@@ -101,6 +121,20 @@ const styles = StyleSheet.create ({
 
     TopHeader: {
         backgroundColor: Colors.BluePrim
+    },
+
+    logout: {
+        flex: 0,
+        height: "6%",
+        width: "40%",
+        borderRadius: 15,
+        marginTop: 20,
+        marginBottom: 70,
+        padding: 10,
+        backgroundColor: "#fb5b5a",
+        justifyContent: "center",
+        alignItems: 'center',
+        alignSelf: 'center'
     }
 
 })
