@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import HomeUser from './Screens/HomeUser'
 import PersonalDetails from './Screens/PersonalDetails';
 import ProtectMe from './Screens/ProtectMe'
@@ -7,10 +7,12 @@ import LocationHistory from './Screens/LocationHistory'
 import HomeStaff from './Screens/HomeStaff'
 import Login from './Screens/Login'
 import Signup from './Screens/Signup'
+import RegisterUser from './Screens/RegisterVisitor'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 import Colors from './constants/colors'
+
 
 
 function Log({navigation}) {
@@ -53,6 +55,14 @@ function PersDetails() {
 	)
 }
 
+function RegVis() {
+	return (
+		<View style={styles.container}>
+			<RegisterUser/>
+		</View>
+	)
+}
+
 function LocHis() {
 	return (
 		<View style={styles.container}>
@@ -72,6 +82,11 @@ function ProtMe() {
 const Stack = createStackNavigator()
 
 export default function App() {
+
+	
+	
+
+
   return (
     <NavigationContainer>
 		<Stack.Navigator initialRouteName="LogIn">
@@ -95,12 +110,23 @@ export default function App() {
 		  component={DashBoard} 
 		  options={{ title: 'DashBoard', headerStyle: { backgroundColor: Colors.BluePrim},
 		  headerTitleAlign: 'center',
-		  headerTintColor: '#fff'}}/>
+		  headerTintColor: '#fff',
+		  headerLeft: null
+		  }}/>
 
 		  <Stack.Screen 
 		  name="StaffHome" 
 		  component={DashBoardStaff} 
 		  options={{ title: 'DashBoard', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff',
+		  headerLeft: null
+		  }}/>
+
+		  <Stack.Screen 
+		  name="Register Visitor" 
+		  component={RegVis}
+		  options={{ title: 'Visitor Details', headerStyle: { backgroundColor: Colors.BluePrim},
 		  headerTitleAlign: 'center',
 		  headerTintColor: '#fff'}}/>
 
@@ -137,4 +163,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+  logout: {
+	  backgroundColor: Colors.BluePrim,
+	  marginLeft: 20
+  },
+
+  text: {
+	  color: 'white',
+	  fontSize: 14,
+	  fontWeight: 'bold'
+  }
 });
