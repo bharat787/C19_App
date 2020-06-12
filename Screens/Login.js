@@ -1,42 +1,80 @@
-import React , {useState}from 'react'
+import React , {useState, useReducer} from 'react'
 import {StyleSheet, Text, View, TextInput, TouchableOpacity, Alert} from 'react-native'
 import Colors from '../constants/colors'
 import firebase from '../environment/config'
+import {connect} from 'react-redux'
+
+function mapStateToProps(state){
+
+	// const { personal } = state
+
+	// return {
+	// 	personal,
+	// }
+
+	return {
+		Staff:state.Staff
+	}
+
+}
+
+function mapDispatchToProps(dispatch){
+	return {
+		setPersonalMode : () => dispatch({type:'PERSONAL_MODE', payload: 'personal'}),
+		setStaffMode : () => dispatch({type:'STAFF_MODE', payload: istaff}),
+		setLogoutMode : () => dispatch({type: "LOGOUT_MODE", payload: undefined})
+	}
+
+}
 
 const Login = props => {
-
-  const [id, setId] = useState('')
-  const [password, setPassword ] = useState('')
-  const [details, setDetails] = useState({})
+	const [id, setId] = useState('')
+	const [password, setPassword ] = useState('')
+	const [details, setDetails] = useState({})
   
-
-  const userLogin = () => {
-    if(id === '' && password === '') {
+	const userLogin = () => {
+    	if(id === '' && password === '') {
 		
-		Alert.alert('Enter details to sign in!')
-    } else {
-		firebase
-		.auth()
-		.signInWithEmailAndPassword(id, password)
-		.then((res) => {
-			console.log(res)
-			console.log('User logged in successfully!')
-			setId('')
-			setPassword('')
+			Alert.alert('Enter details to sign in!')
 
-			firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value', function (snapshot) {
-				setDetails(snapshot.val())
+    	}else {
+			// props.setPersonalMode()
+			// console.log(props.Staff);
+			// props.setPersonalMode()
+			// console.log("second render",props.Staff)
+			
+			firebase
+			.auth()
+			.signInWithEmailAndPassword(id, password)
+			.then((res) => {
+				console.log("this is the res value",res)
+				console.log('User logged in successfully!')
+				//setId('')
+				//setPassword('')
+				firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value', function(snapshot){
+					console.log(snapshot.val())
+
+				if((snapshot.val()).StaffMem === true){
+					props.setStaffMode()
+					props.setStaffMode()
+
+					console.log(props.Staff)
+					console.log("user is a staff")
+
+				
+					//props.setLogoutMode()
+				} else {
+					props.setPersonalMode()
+					props.setPersonalMode()
+
+					console.log(props.Staff)
+					console.log("user is personal")
+					//props.setLogoutMode()
+
+			 		}
+			 	})
 			})
-			if(details.StaffMem) {
-				props.nav.navigate('UserHome')
-
-			} else {
-				props.nav.navigate('StaffHome')
-
-			}
-		})
-		
-
+    
 		}
     }
 
@@ -74,7 +112,8 @@ return (
        style={styles.loginBtn}>
          <Text style={styles.loginText}>Signup</Text>
        </TouchableOpacity>
-
+       
+		
   
       </View>
 
@@ -129,7 +168,9 @@ const styles = StyleSheet.create({
       loginText:{
         color:"white",
         fontSize:14
-      }
+	  },
+	  
+	  
   })
 
-export default Login
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
