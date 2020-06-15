@@ -1,176 +1,225 @@
-import React , {useState, useReducer} from 'react'
-import {StyleSheet, Text, View, TextInput, TouchableOpacity, Alert} from 'react-native'
-import Colors from '../constants/colors'
-import firebase from '../environment/config'
-import {connect} from 'react-redux'
+import React from 'react';
+import { StyleSheet, Text, View, Button, TouchableOpacity, Alert } from 'react-native';
+import HomeUser from './Screens/HomeUser'
+import PersonalDetails from './Screens/PersonalDetails';
+import ProtectMe from './Screens/ProtectMe'
+import LocationHistory from './Screens/LocationHistory'
+import HomeStaff from './Screens/HomeStaff'
+import Login from './Screens/Login'
+import Signup from './Screens/Signup'
+import RegisterUser from './Screens/RegisterVisitor'
+import GenerateAlert from './Screens/GenerateAlert'
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
+import 'react-native-gesture-handler';
+import Colors from './constants/colors'
+import {createStore} from 'redux'
+import {Provider} from 'react-redux'
 
-function mapStateToProps(state){
+const intialState = [
+	{Staff: undefined}
+]
 
-	// const { personal } = state
+const reducer = (state = intialState, action) => {
+	//Staff: undefined
+	switch(action.type){
+		case 'PERSONAL_MODE': 
+			console.log("PERSONAL REDUX WAS CALLED")
+			return action.payload 
+		case 'STAFF_MODE': 
+			console.log("STAFF REDUX WAS CALLED")
+			return action.payload
+		case 'LOGOUT_MODE':
+			console.log("LOGOUT REDUX PERFORMED")
+			return{Staff: undefined}
 
-	// return {
-	// 	personal,
-	// }
-
-	return {
-		Staff:state.Staff
-	}
-
-}
-
-function mapDispatchToProps(dispatch){
-	return {
-		setPersonalMode : () => dispatch({type:'PERSONAL_MODE', payload: 'personal'}),
-		setStaffMode : () => dispatch({type:'STAFF_MODE', payload: istaff}),
-		setLogoutMode : () => dispatch({type: "LOGOUT_MODE", payload: undefined})
-	}
-
-}
-
-const Login = props => {
-	const [id, setId] = useState('')
-	const [password, setPassword ] = useState('')
-	const [details, setDetails] = useState({})
-  
-	const userLogin = () => {
-    	if(id === '' && password === '') {
-		
-			Alert.alert('Enter details to sign in!')
-
-    	}else {
-			// props.setPersonalMode()
-			// console.log(props.Staff);
-			// props.setPersonalMode()
-			// console.log("second render",props.Staff)
 			
-			firebase
-			.auth()
-			.signInWithEmailAndPassword(id, password)
-			.then((res) => {
-				console.log("this is the res value",res)
-				console.log('User logged in successfully!')
-				//setId('')
-				//setPassword('')
-				firebase.database().ref(`users/${firebase.auth().currentUser.uid}`).once('value', function(snapshot){
-					console.log(snapshot.val())
-
-				if((snapshot.val()).StaffMem === true){
-					props.setStaffMode()
-					props.setStaffMode()
-
-					console.log(props.Staff)
-					console.log("user is a staff")
-
-				
-					//props.setLogoutMode()
-				} else {
-					props.setPersonalMode()
-					props.setPersonalMode()
-
-					console.log(props.Staff)
-					console.log("user is personal")
-					//props.setLogoutMode()
-
-			 		}
-			 	})
-			})
-    
-		}
-    }
-
-
-return (
-    <View style={styles.container}>
-    <Text style={styles.logo}>C19</Text>
-    <View style={styles.inputView} >
-      <TextInput  
-        style={styles.inputText}
-        placeholder="Email..." 
-        placeholderTextColor= {Colors.PlaceholderTextColor}
-        onChangeText={text => setId(text)}/>
-    </View>
-    <View style={styles.inputView} >
-      <TextInput  
-        secureTextEntry
-        style={styles.inputText}
-        placeholder="Password..." 
-        placeholderTextColor="#003f5c"
-        onChangeText={text => setPassword(text)}/>
-
-       </View>
-       <TouchableOpacity style={styles.loginBtn}
-       onPress={() => userLogin()}>
-         <Text style={styles.loginText}>LOGIN</Text>
-       </TouchableOpacity>
-
-       <TouchableOpacity style={styles.loginBtn}>
-         <Text style={styles.forgot}>Forgot Password?</Text>
-       </TouchableOpacity>
-       
-       <TouchableOpacity 
-       onPress={() => props.nav.navigate('Register')}
-       style={styles.loginBtn}>
-         <Text style={styles.loginText}>Signup</Text>
-       </TouchableOpacity>
-       
 		
-  
-      </View>
+	}
+	return state
 
-    )
+}
+
+const store = createStore(reducer)
+
+function Log({navigation}) {
+	return (
+		<View style={styles.container}>
+			<Provider store = {store}>
+				<Login nav={navigation}/>
+			</Provider>
+		</View>
+	)
+}
+
+function SignUp({navigation}) {
+	return (
+		<View style={styles.container}>
+			<Signup nav={navigation}/>
+		</View>
+	)
+}
+
+function DashBoard({navigation}) {
+	return (
+		<View style={styles.container}>
+			<Provider store={store}>
+				<HomeUser nav={navigation}/>
+			</Provider>
+		</View>
+	)
+}
+
+function DashBoardStaff({navigation}) {
+	return (
+		<View style={styles.container}>
+			<Provider store={store}>
+				<HomeStaff nav={navigation}/>
+			</Provider>
+		</View>
+	)
+}
+
+function PersDetails() {
+	return (
+		<View style={styles.container}>
+			<PersonalDetails/>
+		</View>
+	)
+}
+
+function RegVis() {
+	return (
+		<View style={styles.container}>
+			<RegisterUser/>
+		</View>
+	)
+}
+
+function LocHis() {
+	return (
+		<View style={styles.container}>
+			<LocationHistory/>
+		</View>
+	)
+}
+
+function ProtMe() {
+	return (
+		<View style={styles.container}>
+			<ProtectMe/>
+		</View>
+	)
+}
+
+function GenAlert() {
+	return (
+		<View style={styles.container}>
+			<GenerateAlert/>
+		</View>
+	)
+}
+
+const Stack = createStackNavigator()
+
+export default function App() {
+
+	
+	
+
+
+  return (
+    <NavigationContainer>
+		<Stack.Navigator initialRouteName="LogIn">
+        
+		  <Stack.Screen 
+		  name="LogIn" 
+		  component={Log} 
+		  options={{ title: 'Login', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+
+		  <Stack.Screen 
+		  name="Register" 
+		  component={SignUp} 
+		  options={{ title: 'Register', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+
+		  <Stack.Screen 
+		  name="UserHome" 
+		  component={DashBoard} 
+		  options={{ title: 'DashBoard', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff',
+		  headerLeft: null
+		  }}/>
+
+		  <Stack.Screen 
+		  name="StaffHome" 
+		  component={DashBoardStaff} 
+		  options={{ title: 'DashBoard', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff',
+		  headerLeft: null
+		  }}/>
+
+		  <Stack.Screen 
+		  name="Register Visitor" 
+		  component={RegVis}
+		  options={{ title: 'Visitor Details', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+
+		  <Stack.Screen 
+		  name="Personal Details" 
+		  component={PersDetails}
+		  options={{ title: 'User Details', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+
+		  <Stack.Screen 
+		  name="Location History" 
+		  component={LocHis}
+		  options={{ title: 'Places Visited', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+
+		  <Stack.Screen 
+		  name="Protect Me" 
+		  component={ProtMe}
+		  options={{ title: 'Protect Me', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+
+		  <Stack.Screen 
+		  name="Generate Alert" 
+		  component={GenAlert}
+		  options={{ title: 'Generate Alert', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+        
+		</Stack.Navigator>
+    </NavigationContainer>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: Colors.Tealbg,
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '100%'
-    },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
-    logo:{
-        fontWeight:"bold",
-        fontSize:50,
-        color: Colors.TealTranslucent,
-        marginBottom:40
-      },
+  logout: {
+	  backgroundColor: Colors.BluePrim,
+	  marginLeft: 20
+  },
 
-      inputView:{
-        width:"80%",
-        backgroundColor:Colors.TealTranslucent,
-        borderRadius:25,
-        height:50,
-        marginBottom:20,
-        justifyContent:"center",
-        padding:20
-      },
-
-      inputText:{
-        height:50,
-        color: Colors.PlaceholderTextColor
-      },
-
-      forgot:{
-        color:"white",
-        fontSize:14
-      },
-      loginBtn:{
-        width:"80%",
-        backgroundColor:"#fb5b5a",
-        borderRadius:25,
-        height:50,
-        alignItems:"center",
-        justifyContent:"center",
-        marginTop:40,
-        marginBottom:10
-      },
-      loginText:{
-        color:"white",
-        fontSize:14
-	  },
-	  
-	  
-  })
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+  text: {
+	  color: 'white',
+	  fontSize: 14,
+	  fontWeight: 'bold'
+  }
+});
