@@ -3,7 +3,7 @@ import { StyleSheet, Button, View, Text, TouchableOpacity, TextInput, FlatList }
 import Colors from '../constants/colors'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from "react-native-modal-datetime-picker"
-//import firebase from '../environment/config'
+import firebase from '../environment/config'
 
 const GenerateAlert = props => {
 
@@ -143,7 +143,7 @@ const styles = StyleSheet.create ({
 	inputText: {
 		padding: 5,
 		margin: 5,
-		borderColor: 'white',
+		borderColor: Colors.Purple1,
 		borderWidth: 1,
 		justifyContent: 'center',
 		alignSelf: 'center',
