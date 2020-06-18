@@ -1,31 +1,93 @@
 import React, {useState} from 'react'
 import { StyleSheet, Button, View, Text, TouchableOpacity, TextInput, FlatList } from 'react-native'
 import Colors from '../constants/colors'
-import DateTimePicker from '@react-native-community/datetimepicker';
-import DateTimePickerModal from "react-native-modal-datetime-picker"
 import firebase from '../environment/config'
 
 const GenerateAlert = props => {
 
+	//////////////////////////////////////////
 
-	var date = new Date().getDate(); //Current Date
-	var month = new Date().getMonth() + 1; //Current Month
-	var year = new Date().getFullYear(); //Current 
-	var hours = new Date().getHours()
+	const [details, setDetails] = useState({});
+  	var values = [];
 
-	var [selectDate, setSelectDate]  = useState('date')
-	var [selectMonth, setSelectMonth]  = useState('month')
-	var [selectYear, setSelectYear]  = useState('year')
-	var [selectHour, setSelectHour]  = useState('hours')
+  	function isEmpty(obj) {
+    	for (var key in obj) {
+      		if (obj.hasOwnProperty(key)) return false;
+    	}
+    	return true;
+ 	}
 
-	const SearchLogs = () => {
-		console.log("search log",selectDate + '/' + selectMonth + '/' + selectYear+ '---' + selectHour)
+  	var userDetails = firebase.database().ref(firebase.auth().currentUser.uid);
+  	var user = firebase.auth().currentUser.uid;
+
+  	const getVisitorData = async () => {
+    	let locData = await firebase
+      		.database()
+      		.ref(`users/${firebase.auth().currentUser.uid}/Visitors/`)
+      		.once("value");
+
+    	firebase
+      		.database()
+      		.ref(`users/${firebase.auth().currentUser.uid}/Visitors/`)
+      		.once("value")
+      		.then((snapshot) => {
+        	setDetails(snapshot.val());
+      	});
+  	};
+
+	console.log(getVisitorData());
+	
+	if (isEmpty(details)) {
+		console.log("value of  details is NULL ");
+	} else {
+		console.log("value of details is not null ", details);
+		values = Object.values(details);
+		console.log("VALUES ", values);
+		var newVal = values
+		console.log("filtered values", newVal.filter(function(info) {
+			return info.VisitorLogs.Date === 10
+		}))
 	}
+
+		//////////////////////////////////////////
+		var date = new Date().getDate(); //Current Date
+		var month = new Date().getMonth() + 1; //Current Month
+		var year = new Date().getFullYear(); //Current 
+		var hours = new Date().getHours()
+
+		var [selectDate, setSelectDate]  = useState('date')
+		var [selectMonth, setSelectMonth]  = useState('month')
+		var [selectYear, setSelectYear]  = useState('year')
+		var [selectHour, setSelectHour]  = useState('hours')
+
+		const SearchLogs = () => {
+			console.log("search log",selectDate + '/' + selectMonth + '/' + selectYear+ '---' + selectHour)
+
+		}
+
+		const renderData = (vals) => {
+			return (
+				  <View style={styles.feedItem}>
+					<View>
+						  <Text style={styles.fontLoc}>{vals.VisitorLogs.name}</Text>
+						  <Text style={styles.fontDate}>
+							{vals.VisitorLogs.Date +
+							  "/" +
+							  vals.VisitorLogs.Month +
+							  "/" +
+							  vals.VisitorLogs.Year}
+						  </Text>
+							<Text style={styles.fontDate}>{vals.VisitorLogs.mobile}</Text>
+					</View>
+				  </View>
+			);
+		  };
+		
 
     return (
 		<View style={styles.screen}>
 			<View style={styles.flatView}>
-				<FlatList />
+				<FlatList data={values} renderItem={({ item }) => renderData(item)}/>
 			</View>
 			<View style={styles.DateView}>
 				<Text style={styles.textin}>DD:</Text>
@@ -73,15 +135,18 @@ const GenerateAlert = props => {
     );
 }
 
+
 const styles = StyleSheet.create ({
 
 	flatView: {
 		//flex: 0,
-		backgroundColor: Colors.Blue1,
+		backgroundColor: 'white',
 		marginTop: 140,
 		marginBottom: 30,
 		marginHorizontal: 20,
-		height: 450
+		height: 450,
+		
+		
 	},
 
     screen: {
@@ -169,7 +234,28 @@ const styles = StyleSheet.create ({
 		color: 'white',
 		fontSize: 20,
 		fontWeight: 'bold'
-	}
+	},
+
+	feedItem: {
+		backgroundColor: Colors.Blue2,
+		borderRadius: 15,
+		padding: 8,
+		flexDirection: "row",
+		marginVertical: 10,
+		width: "80%",
+		justifyContent: "center",
+		alignSelf: "center",
+	  },
+	
+	  fontLoc: {
+		fontSize: 24,
+		color: "white",
+	  },
+	
+	  fontDate: {
+		fontSize: 15,
+		color: "white",
+	  },
 
 })
 
