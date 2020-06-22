@@ -19,6 +19,8 @@
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "~0.61.5",
+    "react-native-ble-manager": "^7.3.0",
+    "react-native-ble-plx": "^2.0.0",
     "react-native-firebase": "^5.6.0",
     "react-native-gesture-handler": "~1.6.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
@@ -29,7 +31,9 @@
     "react-native-unimodules": "~0.9.0",
     "react-native-web": "~0.11.7",
     "react-redux": "^7.2.0",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "xstream": "^11.12.0",
+    "xstream-from-callback": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
