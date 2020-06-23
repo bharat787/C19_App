@@ -9,6 +9,7 @@ import Login from './Screens/Login'
 import Signup from './Screens/Signup'
 import RegisterUser from './Screens/RegisterVisitor'
 import GenerateAlert from './Screens/GenerateAlert'
+import ForgotPass from './Screens/ForgotPass'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
@@ -16,6 +17,7 @@ import Colors from './constants/colors'
 import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 import OneSignal from 'react-native-onesignal'
+
 
 const intialState = [
 	{Staff: undefined}
@@ -77,6 +79,14 @@ function DashBoardStaff({navigation}) {
 			<Provider store={store}>
 				<HomeStaff nav={navigation}/>
 			</Provider>
+		</View>
+	)
+}
+
+function ForPass({navigation}) {
+	return (
+		<View style={styles.container}>
+				<ForgotPass nav={navigation}/>
 		</View>
 	)
 }
@@ -177,6 +187,13 @@ export default function App() {
 		  name="Register" 
 		  component={SignUp} 
 		  options={{ title: 'Register', headerStyle: { backgroundColor: Colors.BluePrim},
+		  headerTitleAlign: 'center',
+		  headerTintColor: '#fff'}}/>
+
+		  <Stack.Screen 
+		  name="ForgotPass" 
+		  component={ForPass} 
+		  options={{ title: 'Reset Password', headerStyle: { backgroundColor: Colors.BluePrim},
 		  headerTitleAlign: 'center',
 		  headerTintColor: '#fff'}}/>
 
