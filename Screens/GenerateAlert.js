@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { StyleSheet, Button, View, Text, TouchableOpacity, TextInput, FlatList } from 'react-native'
+import { StyleSheet, Button, View, Text, TouchableOpacity, TextInput, FlatList, Alert } from 'react-native'
 import Colors from '../constants/colors'
 import firebase from '../environment/config'
 
@@ -8,7 +8,8 @@ const GenerateAlert = props => {
 	//////////////////////////////////////////
 
 	const [details, setDetails] = useState({});
-  	var values = [];
+	  var values = [];
+	  var filterVals = []
 
   	function isEmpty(obj) {
     	for (var key in obj) {
@@ -40,13 +41,13 @@ const GenerateAlert = props => {
 	if (isEmpty(details)) {
 		console.log("value of  details is NULL ");
 	} else {
-		console.log("value of details is not null ", details);
+		//console.log("value of details is not null ", details);
 		values = Object.values(details);
-		console.log("VALUES ", values);
-		var newVal = values
-		console.log("filtered values", newVal.filter(function(info) {
-			return info.VisitorLogs.Date === 10
-		}))
+		//console.log("VALUES ", values);
+		//var newVal = values
+		//console.log("filtered values", newVal.filter(function(info) {
+		//	return info.VisitorLogs.Date === 10
+		//}))
 	}
 
 		//////////////////////////////////////////
@@ -59,28 +60,59 @@ const GenerateAlert = props => {
 		var [selectMonth, setSelectMonth]  = useState('month')
 		var [selectYear, setSelectYear]  = useState('year')
 		var [selectHour, setSelectHour]  = useState('hours')
+		var [search, setSearch] = useState(false)
 
 		const SearchLogs = () => {
+			console.log('SEARCH')
 			console.log("search log",selectDate + '/' + selectMonth + '/' + selectYear+ '---' + selectHour)
+			setSearch(true)
+			filterVals = ("filtered values", values.filter(function(info) {
+				return info.VisitorLogs.Date == selectDate 	}))
+			console.log(filterVals)
+
+		}
+
+		const AlertGen = () => {
+			Alert.alert('Alert being sent to visitors on: ',selectDate + '/' + selectMonth + '/' + selectYear+ '---' + selectHour + 'hours')
 
 		}
 
 		const renderData = (vals) => {
-			return (
-				  <View style={styles.feedItem}>
-					<View>
-						  <Text style={styles.fontLoc}>{vals.VisitorLogs.name}</Text>
-						  <Text style={styles.fontDate}>
-							{vals.VisitorLogs.Date +
-							  "/" +
-							  vals.VisitorLogs.Month +
-							  "/" +
-							  vals.VisitorLogs.Year}
-						  </Text>
-							<Text style={styles.fontDate}>{vals.VisitorLogs.mobile}</Text>
+			if(search == false) { 
+				return (
+					<View style={styles.feedItem}>
+						<View>
+							<Text style={styles.fontLoc}>{vals.VisitorLogs.name}</Text>
+							<Text style={styles.fontDate}>
+								{vals.VisitorLogs.Date +
+								"/" +
+								vals.VisitorLogs.Month +
+								"/" +
+								vals.VisitorLogs.Year}
+							</Text>
+								<Text style={styles.fontDate}>{vals.VisitorLogs.mobile}</Text>
+						</View>
 					</View>
-				  </View>
-			);
+				);
+			} else {
+				//var newVal = vals
+				
+				return (
+					<View style={styles.feedItem}>
+						<View>
+							<Text style={styles.fontLoc}>{filterVals.VisitorLogs.name}</Text>
+							<Text style={styles.fontDate}>
+								{filterVals.VisitorLogs.Date +
+								"/" +
+								filterVals.VisitorLogs.Month +
+								"/" +
+								filterVals.VisitorLogs.Year}
+							</Text>
+								<Text style={styles.fontDate}>{filterVals.VisitorLogs.mobile}</Text>
+						</View>
+					</View>
+				);
+			}
 		  };
 		
 
@@ -127,7 +159,9 @@ const GenerateAlert = props => {
 					style={styles.btnfont}>Search</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity style={styles.AlertButton}>
+				<TouchableOpacity 
+				style={styles.AlertButton}
+				onPress={() => AlertGen()}>
 					<Text style={styles.btnfont}>Alert</Text>
 				</TouchableOpacity>
 			</View>
