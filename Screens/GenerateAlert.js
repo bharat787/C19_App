@@ -1,15 +1,16 @@
 import React, {useState} from 'react'
-import { StyleSheet, Button, View, Text, TouchableOpacity, TextInput, FlatList, Alert } from 'react-native'
+import { StyleSheet, SearchBar, View, Text, TouchableOpacity, TextInput, FlatList, Alert, Modal , TouchableHighlight} from 'react-native'
 import Colors from '../constants/colors'
 import firebase from '../environment/config'
 
 const GenerateAlert = props => {
 
-	//////////////////////////////////////////
 
 	const [details, setDetails] = useState({});
-	  var values = [];
-	  var filterVals = []
+	var values = [];
+	var filterVals = []
+	const [mainList, setMainList] = useState([])
+	const [modalVisible, setModalVisible] = useState(false);
 
   	function isEmpty(obj) {
     	for (var key in obj) {
@@ -18,9 +19,7 @@ const GenerateAlert = props => {
     	return true;
  	}
 
-  	var userDetails = firebase.database().ref(firebase.auth().currentUser.uid);
-  	var user = firebase.auth().currentUser.uid;
-
+  	
   	const getVisitorData = async () => {
     	let locData = await firebase
       		.database()
@@ -41,16 +40,11 @@ const GenerateAlert = props => {
 	if (isEmpty(details)) {
 		console.log("value of  details is NULL ");
 	} else {
-		//console.log("value of details is not null ", details);
 		values = Object.values(details);
-		//console.log("VALUES ", values);
-		//var newVal = values
-		//console.log("filtered values", newVal.filter(function(info) {
-		//	return info.VisitorLogs.Date === 10
-		//}))
+		//setMainList(values)
+		
 	}
 
-		//////////////////////////////////////////
 		var date = new Date().getDate(); //Current Date
 		var month = new Date().getMonth() + 1; //Current Month
 		var year = new Date().getFullYear(); //Current 
@@ -60,25 +54,32 @@ const GenerateAlert = props => {
 		var [selectMonth, setSelectMonth]  = useState('month')
 		var [selectYear, setSelectYear]  = useState('year')
 		var [selectHour, setSelectHour]  = useState('hours')
-		var [search, setSearch] = useState(false)
 
 		const SearchLogs = () => {
-			console.log('SEARCH')
-			console.log("search log",selectDate + '/' + selectMonth + '/' + selectYear+ '---' + selectHour)
-			setSearch(true)
 			filterVals = ("filtered values", values.filter(function(info) {
-				return info.VisitorLogs.Date == selectDate 	}))
-			console.log(filterVals)
-
+				return info.VisitorLogs.Date == selectDate && 
+				info.VisitorLogs.Month == selectMonth &&
+				info.VisitorLogs.hours >= selectHour &&
+				info.VisitorLogs.Year == selectYear}))
+			console.log("FILTERED VALS",filterVals)
+			setMainList(filterVals)
+				
+			setModalVisible(true)
 		}
 
-		const AlertGen = () => {
-			Alert.alert('Alert being sent to visitors on: ',selectDate + '/' + selectMonth + '/' + selectYear+ '---' + selectHour + 'hours')
 
+
+
+		const AlertGen = () => {
+			if(selectYear == 'year' || selectDate == 'date' || selectYear == 'year' || selectHour == ' hours') {
+				Alert.alert('Please fill in date and time for recipients')
+			} else {
+				Alert.alert('Alert being sent to visitors on: ',selectDate + '/' + selectMonth + '/' + selectYear+ '---' + selectHour + 'hours')
+			}
 		}
 
 		const renderData = (vals) => {
-			if(search == false) { 
+		
 				return (
 					<View style={styles.feedItem}>
 						<View>
@@ -94,78 +95,113 @@ const GenerateAlert = props => {
 						</View>
 					</View>
 				);
-			} else {
-				//var newVal = vals
-				
-				return (
-					<View style={styles.feedItem}>
-						<View>
-							<Text style={styles.fontLoc}>{filterVals.VisitorLogs.name}</Text>
-							<Text style={styles.fontDate}>
-								{filterVals.VisitorLogs.Date +
-								"/" +
-								filterVals.VisitorLogs.Month +
-								"/" +
-								filterVals.VisitorLogs.Year}
-							</Text>
-								<Text style={styles.fontDate}>{filterVals.VisitorLogs.mobile}</Text>
-						</View>
-					</View>
-				);
-			}
+			
 		  };
+
+		  const renderModalData = (vals) => {
+			console.log("current value of vals is : " ,vals)
+			return (
+				<View style={styles.feedItem}>
+					<View>
+						<Text style={styles.fontLoc}>{vals.VisitorLogs.name}</Text>
+						<Text style={styles.fontDate}>
+							{vals.VisitorLogs.Date +
+							"/" +
+							vals.VisitorLogs.Month +
+							"/" +
+							vals.VisitorLogs.Year}
+						</Text>
+							<Text style={styles.fontDate}>{vals.VisitorLogs.mobile}</Text>
+					</View>
+				</View>
+			);
+		
+	  };
 		
 
     return (
-		<View style={styles.screen}>
-			<View style={styles.flatView}>
-				<FlatList data={values} renderItem={({ item }) => renderData(item)}/>
-			</View>
-			<View style={styles.DateView}>
-				<Text style={styles.textin}>DD:</Text>
-				<TextInput
-				style={styles.inputText}
-				placeholder='DD'
-				keyboardType='numeric'
-				onChangeText={text => setSelectDate(text)}/>
+      <View style={styles.screen}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+				<Text style={styles.modalText}>Search Result</Text>
+			  	<View style={styles.flatView}>
+          		<FlatList data={mainList} renderItem={({ item }) => renderModalData(item)} />
+        	  	</View>
+              <TouchableHighlight
+                style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <Text style={styles.textStyle}>Close</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
+		
+        <View style={styles.flatView}>
+          <FlatList data={values} renderItem={({ item }) => renderData(item)} />
+        </View>
+        <View style={styles.DateView}>
+          <Text style={styles.textin}>DD:</Text>
+          <TextInput
+            style={styles.inputText}
+            placeholder="DD"
+            keyboardType="numeric"
+            onChangeText={(text) => setSelectDate(text)}
+          />
 
-				<Text style={styles.textin}>MM:</Text>
-				<TextInput
-				style={styles.inputText}
-				placeholder='MM'
-				keyboardType='numeric'
-				onChangeText={text => setSelectMonth(text)}/>
+          <Text style={styles.textin}>MM:</Text>
+          <TextInput
+            style={styles.inputText}
+            placeholder="MM"
+            keyboardType="numeric"
+            onChangeText={(text) => setSelectMonth(text)}
+          />
 
-				<Text style={styles.textin}>YYYY:</Text>
-				<TextInput
-				style={styles.inputText}
-				placeholder='YYYY'
-				keyboardType='numeric'
-				onChangeText={text => setSelectYear(text)}/>
+          <Text style={styles.textin}>YYYY:</Text>
+          <TextInput
+            style={styles.inputText}
+            placeholder="YYYY"
+            keyboardType="numeric"
+            onChangeText={(text) => setSelectYear(text)}
+          />
 
-				<Text style={styles.textin}>HRS:</Text>
-				<TextInput
-				style={styles.inputText}
-				placeholder='HRS'
-				keyboardType='numeric'
-				onChangeText={text => setSelectHour(text)}/>
-			</View>
+          <Text style={styles.textin}>HRS:</Text>
+          <TextInput
+            style={styles.inputText}
+            placeholder="HRS"
+            keyboardType="numeric"
+            onChangeText={(text) => setSelectHour(text)}
+          />
+        </View>
 
-			<View style={styles.buttonView}>
-				<TouchableOpacity 
-					style={styles.searchButton}
-					onPress={() => SearchLogs()}>
-					<Text 
-					style={styles.btnfont}>Search</Text>
-				</TouchableOpacity>
+        <View style={styles.buttonView}>
+          <TouchableOpacity
+            style={styles.searchButton}
+            onPress={() => {
+				SearchLogs()
+			  }}
+          >
+            <Text style={styles.btnfont}>Search</Text>
+          </TouchableOpacity>
 
-				<TouchableOpacity 
-				style={styles.AlertButton}
-				onPress={() => AlertGen()}>
-					<Text style={styles.btnfont}>Alert</Text>
-				</TouchableOpacity>
-			</View>
-		</View>
+          <TouchableOpacity
+            style={styles.AlertButton}
+            onPress={() => AlertGen()}
+          >
+            <Text style={styles.btnfont}>Alert</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     );
 }
 
@@ -276,7 +312,7 @@ const styles = StyleSheet.create ({
 		padding: 8,
 		flexDirection: "row",
 		marginVertical: 10,
-		width: "80%",
+		width: "100%",
 		justifyContent: "center",
 		alignSelf: "center",
 	  },
@@ -290,6 +326,45 @@ const styles = StyleSheet.create ({
 		fontSize: 15,
 		color: "white",
 	  },
+
+	  centeredView: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		marginTop: 22
+	  },
+	  modalView: {
+		margin: 20,
+		backgroundColor: "white",
+		borderRadius: 20,
+		padding: 35,
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+		  width: 0,
+		  height: 2
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5,
+		width: '90%'
+	  },
+	  openButton: {
+		backgroundColor: "#F194FF",
+		borderRadius: 20,
+		padding: 10,
+		elevation: 2
+	  },
+	  textStyle: {
+		color: "white",
+		fontWeight: "bold",
+		textAlign: "center",
+		fontSize: 20
+	  },
+	  modalText: {
+		marginBottom: 15,
+		textAlign: "center"
+	  }
 
 })
 
